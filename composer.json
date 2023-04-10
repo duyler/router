@@ -1,0 +1,32 @@
+{
+    "name": "duyler/router",
+    "description": "Duyler router",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "router"
+    ],
+    "authors": [
+        {
+            "name": "Mikhail Ilinsky",
+            "email": "mail@milinsky.ru"
+        }
+    ],
+    "require": {
+        "php": "^8.2"
+    },
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "Duyler\\Router\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Duyler\\Router\\Test\\": ["tests/"]
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0"
+    }
+}

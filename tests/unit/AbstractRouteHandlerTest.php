@@ -1,0 +1,209 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Duyler\Router\Test;
+
+use PHPUnit\Framework\TestCase;
+use Duyler\Router\Request;
+use Duyler\Router\AbstractRouteHandler;
+use Duyler\Router\MatchedRoute;
+use Duyler\Router\Exception\HandlerIsNotSetException;
+use Duyler\Router\Exception\ActionIsNotSetException;
+use Duyler\Router\Exception\PlaceholdersForPatternNotFoundException;
+
+class AbstractRouteHandlerTest extends TestCase
+{
+    public function testGetIntegerPlaceholderRegExp() : void
+    {
+        $routeHandler = $this->routeHandler();
+        $this->assertEquals('([0-9]+)', $routeHandler->getPlaceholderRegExp('integer'));
+    }
+    
+    public function testGetStringPlaceholderRegExp() : void
+    {
+        $routeHandler = $this->routeHandler();
+        $this->assertEquals('([a-z0-9\-]+)', $routeHandler->getPlaceholderRegExp('string'));
+    }
+    
+    public function testGetArrayPlaceholderRegExp() : void
+    {
+        $routeHandler = $this->routeHandler();
+        $this->assertEquals('([a-z0-9]+)/(([a-z0-9\-]+/)+|([a-z0-9\-_]+)+)($)', $routeHandler->getPlaceholderRegExp('array'));
+    }
+    
+    public function testHasIntegerPlaceholderType() : void
+    {
+        $routeHandler = $this->routeHandler();
+        $this->assertTrue($routeHandler->hasPlaceholderType('integer'));
+    }
+
+    public function testHasStringPlaceholderType() : void
+    {
+        $routeHandler = $this->routeHandler();
+        $this->assertTrue($routeHandler->hasPlaceholderType('string'));
+    }
+    
+    public function testHasArrayPlaceholderType() : void
+    {
+        $routeHandler = $this->routeHandler();
+        $this->assertTrue($routeHandler->hasPlaceholderType('array'));
+    }
+    
+    public function testRoute(): void
+    {
+        $routeHandler = $this->routeHandler();
+        $routeHandler->route('get', 'news/show/{$slug}.html');
+
+        $fillable = $routeHandler->fillable();
+
+        $this->assertEquals('get', $fillable['method']);
+        $this->assertEquals('news/show/{$slug}.html', $fillable['pattern']);
+    }
+
+    public function testWhere(): void
+    {
+        $routeHandler = $this->routeHandler();
+        $routeHandler->where(['slug' => '([a-z0-9\-]+)']);
+
+        $fillable = $routeHandler->fillable();
+
+        $this->assertEquals(['slug' => '([a-z0-9\-]+)'], $fillable['where']);
+    }
+
+    public function testName(): void
+    {
+        $routeHandler = $this->routeHandler();
+        $routeHandler->name('news.show');
+
+        $fillable = $routeHandler->fillable();
+
+        $this->assertEquals('news.show', $fillable['name']);
+    }
+
+    public function testHandler(): void
+    {
+        $routeHandler = $this->routeHandler();
+        $routeHandler->handler('News');
+
+        $fillable = $routeHandler->fillable();
+
+        $this->assertEquals('News', $fillable['handler']);
+    }
+
+    public function testAction(): void
+    {
+        $routeHandler = $this->routeHandler();
+        $routeHandler->action('Show');
+
+        $fillable = $routeHandler->fillable();
+
+        $this->assertEquals('Show', $fillable['action']);
+    }
+
+    public function testMatch(): void
+    {
+        $routeHandler = $this->routeHandler();
+        $routeHandler
+            ->route('get', 'news/show/${id}-{$slug}.html')
+            ->handler('News')
+            ->action('Show')
+            ->where(['id' => '([0-9]+)', 'slug' => '([a-z0-9\-]+)'])
+            ->match();
+
+        $this->assertTrue(true);
+    }
+
+    public function testMatchWhenPlaceholderHasCamelCaseCharacters(): void
+    {
+        $routeHandler = $this->routeHandler();
+        $routeHandler
+            ->route('get', 'news/show/${id}-{$slugString}.html')
+            ->handler('News')
+            ->action('Show')
+            ->where(['id' => '([0-9]+)', 'slugString' => '([a-z0-9\-]+)'])
+            ->match();
+
+        $this->assertTrue(true);
+    }
+
+    public function testMatchWhenHandlerIsNotSet(): void
+    {
+        $this->expectException(HandlerIsNotSetException::class);
+
+        $routeHandler = $this->routeHandler();
+        $routeHandler
+            ->route('get', 'news/show/{$slug}.html')
+            ->match();
+    }
+
+    public function testMatchWhenActionIsNotSet(): void
+    {
+        $this->expectException(ActionIsNotSetException::class);
+
+        $routeHandler = $this->routeHandler();
+        $routeHandler
+            ->route('get', 'news/show/{$slug}.html')
+            ->handler('News')
+            ->match();
+    }
+
+    public function testMatchWhenWhereIsSetAndPatternDoesNotContainPlaceholders(): void
+    {
+        $this->expectException(PlaceholdersForPatternNotFoundException::class);
+
+        $routeHandler = $this->routeHandler();
+        $routeHandler
+            ->route('get', 'news/show/{slug}.html')
+            ->handler('News')
+            ->action('Show')
+            ->where(['slug' => '([a-z0-9\-]+)'])
+            ->match();
+    }
+
+    public function testIsMatched(): void
+    {
+        $routeHandler = $this->routeHandler();
+        $routeHandler->setMatched(self::matchedRoute());
+
+        $this->assertTrue($routeHandler->isMatched());
+    }
+
+    public function testIsMatchedWhenIsNotMatched(): void
+    {
+        $routeHandler = $this->routeHandler();
+
+        $this->assertFalse($routeHandler->isMatched());
+    }
+
+    private function routeHandler(): RouteHandler
+    {
+        $request = $this->createMock(Request::class);
+        return new RouteHandler($request);
+    }
+
+    private static function matchedRoute(): MatchedRoute
+    {
+        return MatchedRoute::create([
+            'name' => 'news.show',
+            'pattern' => 'news/show/{$slug}.html',
+            'handler' => 'News',
+            'action' => 'Show',
+            'method' => 'get',
+            'where' => ['slug' => '([a-z0-9\-]+)'],
+        ]);
+    }
+}
+
+class RouteHandler extends AbstractRouteHandler
+{
+    public function fillable(): array
+    {
+        return $this->fillable;
+    }
+
+    public function setMatched(MatchedRoute $matchedRoute): void
+    {
+        $this->matched = $matchedRoute;
+    }
+}
