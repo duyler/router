@@ -9,7 +9,6 @@ use Duyler\Router\Request;
 use Duyler\Router\AbstractRouteHandler;
 use Duyler\Router\MatchedRoute;
 use Duyler\Router\Exception\HandlerIsNotSetException;
-use Duyler\Router\Exception\ScenarioIsNotSetException;
 use Duyler\Router\Exception\PlaceholdersForPatternNotFoundException;
 
 class AbstractRouteHandlerTest extends TestCase
@@ -134,17 +133,6 @@ class AbstractRouteHandlerTest extends TestCase
         $routeHandler = $this->routeHandler();
         $routeHandler
             ->route('get', 'news/show/{$slug}.html')
-            ->match();
-    }
-
-    public function testMatchWhenScenarioIsNotSet(): void
-    {
-        $this->expectException(ScenarioIsNotSetException::class);
-
-        $routeHandler = $this->routeHandler();
-        $routeHandler
-            ->route('get', 'news/show/{$slug}.html')
-            ->handler('News')
             ->match();
     }
 
