@@ -111,12 +111,8 @@ abstract class AbstractRouteHandler
             throw new PlaceholdersForPatternNotFoundException($this->fillable['pattern']);
         }
         
-        if (!isset($this->fillable['handler'])) {
+        if (!isset($this->fillable['handler']) and !isset($this->fillable['scenario'])) {
             throw new HandlerIsNotSetException($this->fillable['pattern']);
         }
-        
-        if (!isset($this->fillable['scenario'])) {
-            throw new ScenarioIsNotSetException($this->fillable['pattern']);
-        } 
     }
 }
