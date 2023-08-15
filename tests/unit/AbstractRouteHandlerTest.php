@@ -9,7 +9,7 @@ use Duyler\Router\Request;
 use Duyler\Router\AbstractRouteHandler;
 use Duyler\Router\MatchedRoute;
 use Duyler\Router\Exception\HandlerIsNotSetException;
-use Duyler\Router\Exception\ActionIsNotSetException;
+use Duyler\Router\Exception\ScenarioIsNotSetException;
 use Duyler\Router\Exception\PlaceholdersForPatternNotFoundException;
 
 class AbstractRouteHandlerTest extends TestCase
@@ -91,14 +91,14 @@ class AbstractRouteHandlerTest extends TestCase
         $this->assertEquals('News', $fillable['handler']);
     }
 
-    public function testAction(): void
+    public function testScenario(): void
     {
         $routeHandler = $this->routeHandler();
-        $routeHandler->action('Show');
+        $routeHandler->scenario('Show');
 
         $fillable = $routeHandler->fillable();
 
-        $this->assertEquals('Show', $fillable['action']);
+        $this->assertEquals('Show', $fillable['scenario']);
     }
 
     public function testMatch(): void
@@ -107,7 +107,7 @@ class AbstractRouteHandlerTest extends TestCase
         $routeHandler
             ->route('get', 'news/show/${id}-{$slug}.html')
             ->handler('News')
-            ->action('Show')
+            ->scenario('Show')
             ->where(['id' => '([0-9]+)', 'slug' => '([a-z0-9\-]+)'])
             ->match();
 
@@ -120,7 +120,7 @@ class AbstractRouteHandlerTest extends TestCase
         $routeHandler
             ->route('get', 'news/show/${id}-{$slugString}.html')
             ->handler('News')
-            ->action('Show')
+            ->scenario('Show')
             ->where(['id' => '([0-9]+)', 'slugString' => '([a-z0-9\-]+)'])
             ->match();
 
@@ -137,9 +137,9 @@ class AbstractRouteHandlerTest extends TestCase
             ->match();
     }
 
-    public function testMatchWhenActionIsNotSet(): void
+    public function testMatchWhenScenarioIsNotSet(): void
     {
-        $this->expectException(ActionIsNotSetException::class);
+        $this->expectException(ScenarioIsNotSetException::class);
 
         $routeHandler = $this->routeHandler();
         $routeHandler
@@ -156,7 +156,7 @@ class AbstractRouteHandlerTest extends TestCase
         $routeHandler
             ->route('get', 'news/show/{slug}.html')
             ->handler('News')
-            ->action('Show')
+            ->scenario('Show')
             ->where(['slug' => '([a-z0-9\-]+)'])
             ->match();
     }
@@ -188,7 +188,7 @@ class AbstractRouteHandlerTest extends TestCase
             'name' => 'news.show',
             'pattern' => 'news/show/{$slug}.html',
             'handler' => 'News',
-            'action' => 'Show',
+            'scenario' => 'Show',
             'method' => 'get',
             'where' => ['slug' => '([a-z0-9\-]+)'],
         ]);

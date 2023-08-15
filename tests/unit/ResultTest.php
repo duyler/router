@@ -14,9 +14,9 @@ class ResultTest extends TestCase
         $this->assertFalse(self::getResult()->status);
     }
 
-    public function testAction(): void
+    public function testScenario(): void
     {
-        $this->assertEquals('', self::getResult()->action);
+        $this->assertEquals('', self::getResult()->scenario);
     }
 
     public function testAttributes(): void
