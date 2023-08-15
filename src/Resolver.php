@@ -63,7 +63,7 @@ class Resolver
 
         $this->result->status = true;
         $this->result->handler = $matched->handler;
-        $this->result->action = $matched->action;
+        $this->result->scenario = $matched->scenario;
 
         if (!empty($matched->where)) {
             $where = $this->prepareWhere($matched->where, $matched->pattern);

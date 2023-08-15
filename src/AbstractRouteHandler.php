@@ -6,7 +6,7 @@ namespace Duyler\Router;
 
 use Duyler\Router\Exception\PlaceholdersForPatternNotFoundException;
 use Duyler\Router\Exception\HandlerIsNotSetException;
-use Duyler\Router\Exception\ActionIsNotSetException;
+use Duyler\Router\Exception\ScenarioIsNotSetException;
 
 abstract class AbstractRouteHandler
 {
@@ -70,12 +70,12 @@ abstract class AbstractRouteHandler
         return $this;
     }
     
-    public function action(string $action): static
+    public function scenario(string $scenario): static
     {
         if (!is_null($this->matched)) {
             return $this;
         }
-        $this->fillable['action'] = $action;
+        $this->fillable['scenario'] = $scenario;
         return $this;
     }
     
@@ -115,8 +115,8 @@ abstract class AbstractRouteHandler
             throw new HandlerIsNotSetException($this->fillable['pattern']);
         }
         
-        if (!isset($this->fillable['action'])) {
-            throw new ActionIsNotSetException($this->fillable['pattern']);
+        if (!isset($this->fillable['scenario'])) {
+            throw new ScenarioIsNotSetException($this->fillable['pattern']);
         } 
     }
 }

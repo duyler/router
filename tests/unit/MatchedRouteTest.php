@@ -24,9 +24,9 @@ class MatchedRouteTest extends TestCase
         $this->assertEquals('News', self::matchedRoute()->handler);
     }
 
-    public function testAction(): void
+    public function testScenario(): void
     {
-        $this->assertEquals('Show', self::matchedRoute()->action);
+        $this->assertEquals('Show', self::matchedRoute()->scenario);
     }
 
     public function testMethod(): void
@@ -45,7 +45,7 @@ class MatchedRouteTest extends TestCase
             'name' => 'news.show',
             'pattern' => 'news/show/{$slug}',
             'handler' => 'News',
-            'action' => 'Show',
+            'scenario' => 'Show',
             'method' => 'get',
             'where' => ['slug' => '([a-z0-9\-]+)'],
         ]);

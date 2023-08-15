@@ -8,6 +8,6 @@ interface RouteHandlerInterface
     public function where(array $where): static;
     public function name(string $name): static;
     public function handler(string $handler): static;
-    public function action(string $action): static;
+    public function scenario(string $scenario): static;
     public function match(): void;
 }
