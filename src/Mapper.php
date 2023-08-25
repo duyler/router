@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Duyler\Router;
 
 use Duyler\Router\Contract\RouteHandlerInterface;
+use Duyler\Router\Enum\Type;
 
 class Mapper extends AbstractRouteHandler implements RouteHandlerInterface
 {
@@ -25,11 +26,12 @@ class Mapper extends AbstractRouteHandler implements RouteHandlerInterface
         // @todo добавить проверку на существование плейсхолдера с выбросом исключения
         if (!empty($this->fillable['where'])) {
             foreach ($this->fillable['where'] as $key => $condition) {
-                if ($this->hasPlaceholderType($condition)) {
-                    $pattern = str_replace('{$' . $key . '}', $this->getPlaceholderRegExp($condition), $pattern);
-                    continue;
-                }
-                $pattern = str_replace('{$' . $key . '}', $condition, $pattern);
+                $pattern = match ($condition) {
+                    Type::Integer => str_replace('{$' . $key . '}', Type::Integer->value, $pattern),
+                    Type::String => str_replace('{$' . $key . '}', Type::String->value, $pattern),
+                    Type::Array => str_replace('{$' . $key . '}', Type::Array->value, $pattern),
+                    default => str_replace('{$' . $key . '}', $condition, $pattern),
+                };
             }
         }
 

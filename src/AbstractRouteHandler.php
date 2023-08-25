@@ -13,15 +13,6 @@ abstract class AbstractRouteHandler
     protected Request $request;
     protected MatchedRoute|null $matched = null;
     protected array $fillable = [];
-    protected array $attributeTypes = [
-        'STRING' => '([a-z0-9\-]+)',
-        'INTEGER' => '([0-9]+)',
-        'ARRAY' => '([a-z0-9]+)/(([a-z0-9\-]+/)+|([a-z0-9\-_]+)+)($)',
-    ];
-    
-    const PLACEHOLDER_TYPE_STRING = 'STRING';
-    const PLACEHOLDER_TYPE_INTEGER = 'INTEGER';
-    const PLACEHOLDER_TYPE_ARRAY = 'ARRAY';
 
     public function __construct(Request $request)
     {
@@ -78,6 +69,15 @@ abstract class AbstractRouteHandler
         $this->fillable['scenario'] = $scenario;
         return $this;
     }
+
+    public function action(string $action): static
+    {
+        if (!is_null($this->matched)) {
+            return $this;
+        }
+        $this->fillable['action'] = $action;
+        return $this;
+    }
     
     public function match(): void
     {
@@ -93,16 +93,6 @@ abstract class AbstractRouteHandler
             return false;
         }
         return true;
-    }
-    
-    public function getPlaceholderRegExp(string $type): string
-    {
-        return $this->attributeTypes[strtoupper($type)];
-    }
-
-    public function hasPlaceholderType(string $type): bool
-    {
-        return array_key_exists(strtoupper($type), $this->attributeTypes);
     }
     
     protected function checkErrors(): void

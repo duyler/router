@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Duyler\Router;
 
+use Duyler\Router\Enum\Type;
+
 class Resolver
 {
     private Mapper $mapper;
@@ -64,6 +66,7 @@ class Resolver
         $this->result->status = true;
         $this->result->handler = $matched->handler;
         $this->result->scenario = $matched->scenario;
+        $this->result->action = $matched->action;
 
         if (!empty($matched->where)) {
             $where = $this->prepareWhere($matched->where, $matched->pattern);
@@ -154,12 +157,12 @@ class Resolver
 
             $placeHolder = substr($value[0], 2, -1);
 
-            if ($this->mapper->hasPlaceholderType($where[$placeHolder])) {
-                $sortedWhere[$placeHolder] = $this->mapper->getPlaceholderRegExp($where[$placeHolder]);
-                continue;
-            }
-
-            $sortedWhere[$placeHolder] = $where[$placeHolder];
+            $sortedWhere[$placeHolder] = match ($where[$placeHolder]) {
+                Type::Integer => Type::Integer->value,
+                Type::String => Type::String->value,
+                Type::Array => Type::Array->value,
+                default => $where[$placeHolder],
+            };
         }
 
         return $sortedWhere;
@@ -171,18 +174,11 @@ class Resolver
 
         foreach ($where as $placeHolder => $value) {
 
-            if ($this->mapper->hasPlaceholderType($value) === false) {
-                continue;
-            }
-
-            if (strtoupper($value) === Mapper::PLACEHOLDER_TYPE_INTEGER) {
-                $attributesTypesMap[$placeHolder] = Mapper::PLACEHOLDER_TYPE_INTEGER;
-                continue;
-            }
-
-            if (strtoupper($value) === Mapper::PLACEHOLDER_TYPE_ARRAY) {
-                $attributesTypesMap[$placeHolder] = Mapper::PLACEHOLDER_TYPE_ARRAY;
-            }
+            $attributesTypesMap[$placeHolder] = match ($value) {
+                Type::Integer => Type::Integer,
+                Type::String => Type::String,
+                Type::Array => Type::Array,
+            };
         }
 
         return $attributesTypesMap;
@@ -198,19 +194,12 @@ class Resolver
 
         foreach ($rawAttributes as $placeHolder => $value) {
 
-            if (array_key_exists($placeHolder, $attributesTypesMap) === false) {
-                $attributes[$placeHolder] = $value;
-                continue;
-            }
-
-            if ($attributesTypesMap[$placeHolder] === Mapper::PLACEHOLDER_TYPE_INTEGER) {
-                $attributes[$placeHolder] = intval($value);
-                continue;
-            }
-
-            if ($attributesTypesMap[$placeHolder] === Mapper::PLACEHOLDER_TYPE_ARRAY) {
-                $attributes[$placeHolder] = explode(self::ATTRIBUTE_ARRAY_DELIMITER, $value);
-            }
+            $attributes[$placeHolder] = match ($attributesTypesMap[$placeHolder]) {
+                Type::Integer => intval($value),
+                Type::String => strval($value),
+                Type::Array => explode(self::ATTRIBUTE_ARRAY_DELIMITER, $value),
+                default => $value,
+            };
         }
 
         return $attributes;

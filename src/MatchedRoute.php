@@ -10,6 +10,7 @@ readonly class MatchedRoute
     public string $pattern;
     public string $handler;
     public string $scenario;
+    public string $action;
     public string $method;
     public array $where;
     
@@ -18,8 +19,9 @@ readonly class MatchedRoute
         $matched = new static();
         $matched->name = $fillable['name'] ?? '';
         $matched->pattern = $fillable['pattern'];
-        $matched->handler = $fillable['handler'];
-        $matched->scenario = $fillable['scenario'];
+        $matched->handler = $fillable['handler'] ?? '';
+        $matched->scenario = $fillable['scenario'] ?? '';
+        $matched->action = $fillable['action'] ?? '';
         $matched->method = $fillable['method'];
         $matched->where = $fillable['where'] ?? [];
         return $matched;
