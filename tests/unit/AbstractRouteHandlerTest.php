@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Duyler\Router\Test;
 
+use Duyler\Router\Enum\Type;
 use PHPUnit\Framework\TestCase;
 use Duyler\Router\Request;
 use Duyler\Router\AbstractRouteHandler;
@@ -15,38 +16,17 @@ class AbstractRouteHandlerTest extends TestCase
 {
     public function testGetIntegerPlaceholderRegExp() : void
     {
-        $routeHandler = $this->routeHandler();
-        $this->assertEquals('([0-9]+)', $routeHandler->getPlaceholderRegExp('integer'));
+        $this->assertEquals('([0-9]+)', Type::Integer->value);
     }
     
     public function testGetStringPlaceholderRegExp() : void
     {
-        $routeHandler = $this->routeHandler();
-        $this->assertEquals('([a-z0-9\-]+)', $routeHandler->getPlaceholderRegExp('string'));
+        $this->assertEquals('([a-z0-9\-]+)', Type::String->value);
     }
     
     public function testGetArrayPlaceholderRegExp() : void
     {
-        $routeHandler = $this->routeHandler();
-        $this->assertEquals('([a-z0-9]+)/(([a-z0-9\-]+/)+|([a-z0-9\-_]+)+)($)', $routeHandler->getPlaceholderRegExp('array'));
-    }
-    
-    public function testHasIntegerPlaceholderType() : void
-    {
-        $routeHandler = $this->routeHandler();
-        $this->assertTrue($routeHandler->hasPlaceholderType('integer'));
-    }
-
-    public function testHasStringPlaceholderType() : void
-    {
-        $routeHandler = $this->routeHandler();
-        $this->assertTrue($routeHandler->hasPlaceholderType('string'));
-    }
-    
-    public function testHasArrayPlaceholderType() : void
-    {
-        $routeHandler = $this->routeHandler();
-        $this->assertTrue($routeHandler->hasPlaceholderType('array'));
+        $this->assertEquals('([a-z0-9]+)/(([a-z0-9\-]+/)+|([a-z0-9\-_]+)+)($)', Type::Array->value);
     }
     
     public function testRoute(): void
