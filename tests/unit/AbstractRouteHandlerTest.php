@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Duyler\Router\Test;
 
 use Duyler\Router\Enum\Type;
-use PHPUnit\Framework\TestCase;
-use Duyler\Router\Request;
-use Duyler\Router\AbstractRouteHandler;
-use Duyler\Router\MatchedRoute;
 use Duyler\Router\Exception\HandlerIsNotSetException;
 use Duyler\Router\Exception\PlaceholdersForPatternNotFoundException;
+use Duyler\Router\Handler\AbstractRouteHandler;
+use Duyler\Router\MatchedRoute;
+use Duyler\Router\Request;
+use PHPUnit\Framework\TestCase;
 
 class AbstractRouteHandlerTest extends TestCase
 {

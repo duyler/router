@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Duyler\Router;
+namespace Duyler\Router\Handler;
 
-use Duyler\Router\Exception\PlaceholdersForPatternNotFoundException;
 use Duyler\Router\Exception\HandlerIsNotSetException;
-use Duyler\Router\Exception\ScenarioIsNotSetException;
+use Duyler\Router\Exception\PlaceholdersForPatternNotFoundException;
+use Duyler\Router\MatchedRoute;
+use Duyler\Router\Request;
 
 abstract class AbstractRouteHandler
 {

@@ -2,17 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Duyler\Router;
+namespace Duyler\Router\Handler;
 
 use Duyler\Router\Contract\RouteHandlerInterface;
-use Duyler\Router\Exception\RouteIsNotFoundForNameException;
 use Duyler\Router\Exception\PlaceholderIsNotFoundForRouteException;
 use Duyler\Router\Exception\PlaceholdersParamsIsNotFoundException;
+use Duyler\Router\Exception\RouteIsNotFoundForNameException;
+use Duyler\Router\MatchedRoute;
+use Duyler\Router\Request;
+use Duyler\Router\Route;
+use Duyler\Router\RouteFilePlug;
 
 class UrlGenerator extends AbstractRouteHandler implements RouteHandlerInterface
 {
     protected string $requiredName;
-    protected $route;
+    protected Route $route;
     protected Request $request;
 
     protected RouteFilePlug $routeFilePlug;

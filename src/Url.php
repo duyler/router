@@ -4,24 +4,30 @@ declare(strict_types=1);
 
 namespace Duyler\Router;
 
+use Duyler\Router\Exception\RouteIsNotFoundForNameException;
 use Duyler\Router\Exception\RouterIsNotInitializedException;
+use Duyler\Router\Handler\UrlGenerator;
 
 class Url
 {
-    protected static $uriGenerator = null;
+    protected static UrlGenerator $uriGenerator;
 
-    public static function setUrlGenerator(UrlGenerator $uriGenerator)
+    public function __construct(UrlGenerator $uriGenerator)
     {
         static::$uriGenerator = $uriGenerator;
     }
 
-    public static function get(string $routeName, array $params = [], string $lang = '') : string
+    /**
+     * @throws RouterIsNotInitializedException
+     * @throws RouteIsNotFoundForNameException
+     */
+    public static function get(string $routeName, array $params = [], string $lang = ''): string
     {
         if (is_null(static::$uriGenerator)) {
             throw new RouterIsNotInitializedException();
         }
 
-        Route::setHandler(static::$uriGenerator);
+        new Route(static::$uriGenerator);
 
         return static::$uriGenerator->getUrl($routeName, $params, $lang);
     }

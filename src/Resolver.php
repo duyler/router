@@ -5,25 +5,22 @@ declare(strict_types=1);
 namespace Duyler\Router;
 
 use Duyler\Router\Enum\Type;
+use Duyler\Router\Handler\Mapper;
 
 class Resolver
 {
-    private Mapper $mapper;
-    private Request $request;
-    private RouteFilePlug $routeFilePlug;
     private array $segments = [];
     private array $languages = [];
-    private Result $result;
     private string $uri;
 
     private const ATTRIBUTE_ARRAY_DELIMITER = '/';
 
-    public function __construct(Mapper $mapper, Request $request, RouteFilePlug $routeFilePlug, Result $result)
-    {
-        $this->mapper = $mapper;
-        $this->request = $request;
-        $this->routeFilePlug = $routeFilePlug;
-        $this->result = $result;
+    public function __construct(
+        private readonly Mapper $mapper,
+        private readonly Request $request,
+        private readonly RouteFilePlug $routeFilePlug,
+        private readonly Result $result
+    ) {
     }
 
     public function resolve(): Result
@@ -81,7 +78,7 @@ class Resolver
     {
         $currentLanguage = '';
 
-        if (array_search($this->segments[0], $this->languages, true) !== false) {
+        if (in_array($this->segments[0], $this->languages, true)) {
             $currentLanguage = array_shift($this->segments);
         }
 
