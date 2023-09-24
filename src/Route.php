@@ -13,7 +13,7 @@ class Route
 
     protected static string $routesDirPath = '';
 
-    public static function setHandler(RouteHandlerInterface $handler): void
+    public function __construct(RouteHandlerInterface $handler)
     {
         static::$handler = $handler;
     }

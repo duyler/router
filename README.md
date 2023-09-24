@@ -1,10 +1,18 @@
 # Router
 ![build](https://github.com/duyler/router/workflows/build/badge.svg)
 
-## Роутер позволяет определять маршруты для приложения вида:
+## Usage routing:
 
-`Route::get('/categories/edit/{$id}')->where(['id' => 'integer'])->handler('Catalog')->action('CategoryEdit')->name('category.edit')->match();`
+```php
+Route::get('/categories/edit/{$id}')
+    ->where(['id' => Type::Integer])
+    ->handler('Catalog')->action('CategoryEdit')
+    ->name('category.edit')
+    ->match();
+```
 
-## А так же генерировать ссылки с помощью имен маршрутов:
+## Creating links from routes:
 
-`Url::get('category.edit', ['id' => 1]);`
+```php
+Url::get('category.edit', ['id' => 1]);
+```

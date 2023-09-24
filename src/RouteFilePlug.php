@@ -9,20 +9,11 @@ use Duyler\Router\Exception\RouteFileAliasIsNotStringException;
 
 class RouteFilePlug
 {
-    private string $routesDirPath;
-    private array $aliases = [];
     private const ROUTE_DEFAULT_FILE_NAME = 'default';
 
-    public function setRoutesDirPath(string $routesDirPath): void
+    public function __construct(private string $routesDirPath, private array $aliases)
     {
-        $this->routesDirPath = $routesDirPath;
     }
-
-    public function setRoutesAliases(array $aliases): void
-    {
-        $this->aliases = $aliases;
-    }
-
 
     public function plug(string $routesFileName): void
     {

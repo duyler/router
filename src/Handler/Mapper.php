@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Duyler\Router;
+namespace Duyler\Router\Handler;
 
 use Duyler\Router\Contract\RouteHandlerInterface;
 use Duyler\Router\Enum\Type;
+use Duyler\Router\MatchedRoute;
 
 class Mapper extends AbstractRouteHandler implements RouteHandlerInterface
 {

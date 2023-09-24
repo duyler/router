@@ -4,49 +4,44 @@ declare(strict_types=1);
 
 namespace Duyler\Router;
 
-use Duyler\DependencyInjection\ContainerBuilder;
+use Duyler\Router\Handler\Mapper;
+use Duyler\Router\Handler\UrlGenerator;
+use Psr\Http\Message\ServerRequestInterface;
 
 class Router
 {
     private Resolver $resolver;
-    private RouteFilePlug $routeFilePlug;
 
-    public function __construct(
-        Resolver $resolver,
-        UrlGenerator $urlGenerator,
-        Mapper $mapper,
-        RouteFilePlug $routeFilePlug)
+    public function __construct(ServerRequestInterface $serverRequest, RouterConfig $routerConfig)
     {
-        $this->resolver = $resolver;
-        $this->routeFilePlug = $routeFilePlug;
-        Route::setHandler($mapper);
-        Url::setUrlGenerator($urlGenerator);
+        $request = new Request(
+            $serverRequest->getUri()->getPath(),
+            $serverRequest->getMethod(),
+            $serverRequest->getUri()->getHost(),
+            $serverRequest->getUri()->getScheme(),
+        );
+
+        $routerFilePlug = new RouteFilePlug(
+            $routerConfig->routesDirPath,
+            $routerConfig->routesAliases,
+        );
+
+        $mapper = new Mapper($request);
+
+        $this->resolver = new Resolver(
+            $mapper,
+            $request,
+            $routerFilePlug,
+            new Result()
+        );
+
+        new Route($mapper);
+        new Url(new UrlGenerator($routerFilePlug, $request));
     }
 
-    public static function create(string $uri, string $method, string $host, string $protocol = 'http'): self
+    public static function create(ServerRequestInterface $serverRequest, RouterConfig $routerConfig): static
     {
-        $container = ContainerBuilder::build();
-        $container->set(new Request($uri, $method, $host, $protocol));
-
-        return $container->make(static::class);
-    }
-
-    public function setRoutesDirPath(string $dirPath): self
-    {
-        $this->routeFilePlug->setRoutesDirPath($dirPath);
-        return $this;
-    }
-
-    public function setRoutesAliases(array $aliases): self
-    {
-        $this->routeFilePlug->setRoutesAliases($aliases);
-        return $this;
-    }
-    
-    public function setLanguages(array $languages): self
-    {
-        $this->resolver->setLanguages($languages);
-        return $this;
+        return new static($serverRequest, $routerConfig);
     }
 
     public function startRouting(): Result
