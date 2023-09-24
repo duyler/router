@@ -6,7 +6,8 @@
 ```php
 Route::get('/categories/edit/{$id}')
     ->where(['id' => Type::Integer])
-    ->handler('Catalog')->action('CategoryEdit')
+    ->handler('Catalog')
+    ->action('CategoryEdit')
     ->name('category.edit')
     ->match();
 ```
