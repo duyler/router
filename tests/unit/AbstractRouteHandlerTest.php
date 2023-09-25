@@ -14,21 +14,21 @@ use PHPUnit\Framework\TestCase;
 
 class AbstractRouteHandlerTest extends TestCase
 {
-    public function testGetIntegerPlaceholderRegExp() : void
+    public function testGetIntegerPlaceholderRegExp(): void
     {
         $this->assertEquals('([0-9]+)', Type::Integer->value);
     }
-    
-    public function testGetStringPlaceholderRegExp() : void
+
+    public function testGetStringPlaceholderRegExp(): void
     {
         $this->assertEquals('([a-z0-9\-]+)', Type::String->value);
     }
-    
-    public function testGetArrayPlaceholderRegExp() : void
+
+    public function testGetArrayPlaceholderRegExp(): void
     {
         $this->assertEquals('([a-z0-9]+)/(([a-z0-9\-]+/)+|([a-z0-9\-_]+)+)($)', Type::Array->value);
     }
-    
+
     public function testRoute(): void
     {
         $routeHandler = $this->routeHandler();

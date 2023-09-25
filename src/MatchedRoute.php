@@ -13,7 +13,7 @@ readonly class MatchedRoute
     public string $action;
     public string $method;
     public array $where;
-    
+
     public static function create(array $fillable): self
     {
         $matched = new static();
@@ -27,4 +27,3 @@ readonly class MatchedRoute
         return $matched;
     }
 }
- 

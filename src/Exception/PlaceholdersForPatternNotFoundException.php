@@ -8,4 +8,4 @@ class PlaceholdersForPatternNotFoundException extends \Exception
     {
         parent::__construct('Placeholders for "' . $pattern . '" not found.');
     }
-} 
+}

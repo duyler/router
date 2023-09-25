@@ -31,6 +31,6 @@ class ResultTest extends TestCase
 
     private static function getResult(): Result
     {
-        return new Result;
+        return new Result();
     }
 }

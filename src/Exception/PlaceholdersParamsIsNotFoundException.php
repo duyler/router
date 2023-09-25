@@ -8,4 +8,4 @@ class PlaceholdersParamsIsNotFoundException extends \Exception
     {
         parent::__construct('Params for placeholders in pattern "' . $pattern . '" is not received.');
     }
-} 
+}
