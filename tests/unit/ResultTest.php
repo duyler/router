@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 namespace Duyler\Router\Test;
 
-use PHPUnit\Framework\TestCase;
 use Duyler\Router\Result;
+use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class ResultTest extends TestCase
 {
     public function testStatus(): void

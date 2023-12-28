@@ -39,7 +39,7 @@ class UrlGenerator extends AbstractRouteHandler implements RouteHandlerInterface
     public function getUrl(string $routeName, array $params = [], string $lang = ''): string
     {
         $this->fillable = [];
-        $this->matched = null;
+        $this->matched  = null;
 
         $this->requiredName = $routeName;
 
@@ -61,15 +61,10 @@ class UrlGenerator extends AbstractRouteHandler implements RouteHandlerInterface
         }
 
         foreach ($params as $placeholderSelector => $value) {
-
             $placeholder = ('{$' . $placeholderSelector . '}');
 
             if (!preg_match('(' . preg_quote($placeholder) . ')', $this->fillable['pattern'])) {
-                throw new PlaceholderIsNotFoundForRouteException(
-                    $placeholderSelector,
-                    $this->fillable['pattern'],
-                    $this->requiredName
-                );
+                throw new PlaceholderIsNotFoundForRouteException($placeholderSelector, $this->fillable['pattern'], $this->requiredName);
             }
 
             $this->fillable['pattern'] = str_replace($placeholder, $value, $this->fillable['pattern']);

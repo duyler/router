@@ -2,7 +2,9 @@
 
 namespace Duyler\Router\Exception;
 
-class PlaceholdersForPatternNotFoundException extends \Exception
+use Exception;
+
+class PlaceholdersForPatternNotFoundException extends Exception
 {
     public function __construct(string $pattern)
     {

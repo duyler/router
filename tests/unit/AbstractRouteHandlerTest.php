@@ -12,6 +12,11 @@ use Duyler\Router\MatchedRoute;
 use Duyler\Router\Request;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class AbstractRouteHandlerTest extends TestCase
 {
     public function testGetIntegerPlaceholderRegExp(): void
@@ -88,7 +93,8 @@ class AbstractRouteHandlerTest extends TestCase
             ->handler('News')
             ->scenario('Show')
             ->where(['id' => '([0-9]+)', 'slug' => '([a-z0-9\-]+)'])
-            ->match();
+            ->match()
+        ;
 
         $this->assertTrue(true);
     }
@@ -101,7 +107,8 @@ class AbstractRouteHandlerTest extends TestCase
             ->handler('News')
             ->scenario('Show')
             ->where(['id' => '([0-9]+)', 'slugString' => '([a-z0-9\-]+)'])
-            ->match();
+            ->match()
+        ;
 
         $this->assertTrue(true);
     }
@@ -113,7 +120,8 @@ class AbstractRouteHandlerTest extends TestCase
         $routeHandler = $this->routeHandler();
         $routeHandler
             ->route('get', 'news/show/{$slug}.html')
-            ->match();
+            ->match()
+        ;
     }
 
     public function testMatchWhenWhereIsSetAndPatternDoesNotContainPlaceholders(): void
@@ -126,7 +134,8 @@ class AbstractRouteHandlerTest extends TestCase
             ->handler('News')
             ->scenario('Show')
             ->where(['slug' => '([a-z0-9\-]+)'])
-            ->match();
+            ->match()
+        ;
     }
 
     public function testIsMatched(): void
@@ -147,6 +156,7 @@ class AbstractRouteHandlerTest extends TestCase
     private function routeHandler(): RouteHandler
     {
         $request = $this->createMock(Request::class);
+
         return new RouteHandler($request);
     }
 

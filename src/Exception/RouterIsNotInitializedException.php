@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Duyler\Router\Exception;
 
-class RouterIsNotInitializedException extends \Exception
+use Exception;
+
+class RouterIsNotInitializedException extends Exception
 {
     public function __construct()
     {

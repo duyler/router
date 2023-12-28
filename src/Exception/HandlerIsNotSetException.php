@@ -2,7 +2,9 @@
 
 namespace Duyler\Router\Exception;
 
-class HandlerIsNotSetException extends \Exception
+use Exception;
+
+class HandlerIsNotSetException extends Exception
 {
     public function __construct(string $pattern)
     {

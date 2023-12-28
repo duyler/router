@@ -24,6 +24,7 @@ readonly class MatchedRoute
         $matched->action = $fillable['action'] ?? '';
         $matched->method = $fillable['method'];
         $matched->where = $fillable['where'] ?? [];
+
         return $matched;
     }
 }

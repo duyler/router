@@ -12,7 +12,7 @@ use Duyler\Router\Request;
 abstract class AbstractRouteHandler
 {
     protected Request $request;
-    protected MatchedRoute|null $matched = null;
+    protected null|MatchedRoute $matched = null;
     protected array $fillable = [];
 
     public function __construct(Request $request)
@@ -30,6 +30,7 @@ abstract class AbstractRouteHandler
 
         $this->fillable['method'] = $method;
         $this->fillable['pattern'] = $pattern;
+
         return $this;
     }
 
@@ -41,6 +42,7 @@ abstract class AbstractRouteHandler
         if (!is_null($where)) {
             $this->fillable['where'] = $where;
         }
+
         return $this;
     }
 
@@ -50,6 +52,7 @@ abstract class AbstractRouteHandler
             return $this;
         }
         $this->fillable['name'] = $name;
+
         return $this;
     }
 
@@ -59,6 +62,7 @@ abstract class AbstractRouteHandler
             return $this;
         }
         $this->fillable['handler'] = $handler;
+
         return $this;
     }
 
@@ -68,6 +72,7 @@ abstract class AbstractRouteHandler
             return $this;
         }
         $this->fillable['scenario'] = $scenario;
+
         return $this;
     }
 
@@ -77,6 +82,7 @@ abstract class AbstractRouteHandler
             return $this;
         }
         $this->fillable['action'] = $action;
+
         return $this;
     }
 
@@ -93,6 +99,7 @@ abstract class AbstractRouteHandler
         if (is_null($this->matched)) {
             return false;
         }
+
         return true;
     }
 

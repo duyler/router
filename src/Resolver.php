@@ -9,19 +9,17 @@ use Duyler\Router\Handler\Mapper;
 
 class Resolver
 {
+    private const ATTRIBUTE_ARRAY_DELIMITER = '/';
     private array $segments = [];
     private array $languages = [];
     private string $uri;
-
-    private const ATTRIBUTE_ARRAY_DELIMITER = '/';
 
     public function __construct(
         private readonly Mapper $mapper,
         private readonly Request $request,
         private readonly RouteFilePlug $routeFilePlug,
         private readonly Result $result
-    ) {
-    }
+    ) {}
 
     public function resolve(): Result
     {
@@ -45,7 +43,7 @@ class Resolver
 
     private function plugRoutes(): void
     {
-        if ($this->uri === '/' or count($this->segments) === 0) {
+        if ('/' === $this->uri or 0 === count($this->segments)) {
             $this->routeFilePlug->plugDefault();
         } else {
             $this->routeFilePlug->plug($this->segments[0]);
@@ -104,12 +102,11 @@ class Resolver
         $segments = explode(' ', trim($patternWithoutPlaceholders, ' '));
 
         foreach ($where as $key => $value) {
-
             $needless = array_shift($segments);
 
             $uri = substr($uri, strlen($needless));
 
-            $delimiter = substr($value, 0, 1) === '(' ? ')' : substr($value, 0, 1);
+            $delimiter = '(' === substr($value, 0, 1) ? ')' : substr($value, 0, 1);
 
             $segmentPattern = $this->makePattern($segments, $delimiter, $value);
 
@@ -118,7 +115,7 @@ class Resolver
             if (empty($segments)) {
                 $rawAttributes[$key] = $matched[0];
             } else {
-                $rawAttributes[$key] = substr($matched[0], 0, -(strlen(current($segments))));
+                $rawAttributes[$key] = substr($matched[0], 0, -strlen(current($segments)));
             }
 
             $uri = substr($uri, strlen($rawAttributes[$key]));
@@ -129,18 +126,20 @@ class Resolver
 
     private function clearPlaceholdersInPattern(array $where, string $pattern): string
     {
-        while (key($where) !== null) {
+        while (null !== key($where)) {
             $pattern = str_replace('{$' . key($where) . '}', ' ', $pattern);
             next($where);
         }
+
         return $pattern;
     }
 
     private function makePattern(array $segments, string $delimiter, string $whereValue): string
     {
-        if (isset($segments[0]) === false) {
+        if (false === isset($segments[0])) {
             return substr($whereValue, 0, -1) . $delimiter;
         }
+
         return substr($whereValue, 0, -1) . preg_quote($segments[0]) . $delimiter;
     }
 
@@ -151,7 +150,6 @@ class Resolver
         $sortedWhere = [];
 
         foreach ($matched as $value) {
-
             $placeHolder = substr($value[0], 2, -1);
 
             $sortedWhere[$placeHolder] = match ($where[$placeHolder]) {
@@ -170,7 +168,6 @@ class Resolver
         $attributesTypesMap = [];
 
         foreach ($where as $placeHolder => $value) {
-
             $attributesTypesMap[$placeHolder] = match ($value) {
                 Type::Integer => Type::Integer,
                 Type::String => Type::String,
@@ -190,7 +187,6 @@ class Resolver
         }
 
         foreach ($rawAttributes as $placeHolder => $value) {
-
             $attributes[$placeHolder] = match ($attributesTypesMap[$placeHolder]) {
                 Type::Integer => intval($value),
                 Type::String => strval($value),

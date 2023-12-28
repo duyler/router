@@ -36,7 +36,7 @@ class Mapper extends AbstractRouteHandler implements RouteHandlerInterface
             }
         }
 
-        if (!preg_match("(^$pattern$)", $this->request->getUri())) {
+        if (!preg_match("(^{$pattern}$)", $this->request->getUri())) {
             return;
         }
 

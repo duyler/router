@@ -2,7 +2,9 @@
 
 namespace Duyler\Router\Exception;
 
-class PlaceholderIsNotFoundForRouteException extends \Exception
+use Exception;
+
+class PlaceholderIsNotFoundForRouteException extends Exception
 {
     public function __construct($placeholderSelector, $pattern, $requiredName)
     {

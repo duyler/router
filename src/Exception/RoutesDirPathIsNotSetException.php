@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Duyler\Router\Exception;
 
-class RoutesDirPathIsNotSetException extends \Exception
+use Exception;
+
+class RoutesDirPathIsNotSetException extends Exception
 {
     public function __construct()
     {
