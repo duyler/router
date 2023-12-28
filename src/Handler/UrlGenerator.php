@@ -39,7 +39,7 @@ class UrlGenerator extends AbstractRouteHandler implements RouteHandlerInterface
     public function getUrl(string $routeName, array $params = [], string $lang = ''): string
     {
         $this->fillable = [];
-        $this->matched  = null;
+        $this->matched = null;
 
         $this->requiredName = $routeName;
 
