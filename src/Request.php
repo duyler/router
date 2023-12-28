@@ -19,7 +19,7 @@ class Request
 
         $this->protocol = $protocol;
 
-        if (!empty($uri) && $uri !== '/') {
+        if (!empty($uri) && '/' !== $uri) {
             $this->uri = preg_replace('(\?.*$)', '', trim($uri, '/'));
         }
     }

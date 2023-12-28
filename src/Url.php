@@ -32,4 +32,3 @@ class Url
         return static::$uriGenerator->getUrl($routeName, $params, $lang);
     }
 }
-

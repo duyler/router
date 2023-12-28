@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Duyler\Router\Exception;
 
-class RouteFileAliasIsNotStringException extends \Exception
+use Exception;
+
+class RouteFileAliasIsNotStringException extends Exception
 {
     public function __construct(string $aliasFor, string $type)
     {

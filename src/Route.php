@@ -9,7 +9,7 @@ use Exception;
 
 class Route
 {
-    protected static RouteHandlerInterface|null $handler = null;
+    protected static null|RouteHandlerInterface $handler = null;
 
     protected static string $routesDirPath = '';
 

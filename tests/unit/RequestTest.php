@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 namespace Duyler\Router\Test;
 
-use PHPUnit\Framework\TestCase;
 use Duyler\Router\Request;
+use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class RequestTest extends TestCase
 {
     public function testGetProtocol(): void
@@ -45,6 +50,7 @@ class RequestTest extends TestCase
         $method = 'get';
         $host = 'host.ru';
         $protocol = 'https';
+
         return new Request($uri, $method, $host, $protocol);
     }
 }

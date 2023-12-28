@@ -27,7 +27,7 @@ class UrlGenerator extends AbstractRouteHandler implements RouteHandlerInterface
         parent::__construct($request);
     }
 
-    public function match() : void
+    public function match(): void
     {
         parent::match();
 
@@ -36,7 +36,7 @@ class UrlGenerator extends AbstractRouteHandler implements RouteHandlerInterface
         }
     }
 
-    public function getUrl(string $routeName, array $params = [], string $lang = '') : string
+    public function getUrl(string $routeName, array $params = [], string $lang = ''): string
     {
         $this->fillable = [];
         $this->matched = null;
@@ -54,22 +54,17 @@ class UrlGenerator extends AbstractRouteHandler implements RouteHandlerInterface
         return $this->buildUrl($params, $lang);
     }
 
-    private function buildUrl(array $params, string $lang) : string
+    private function buildUrl(array $params, string $lang): string
     {
         if (preg_match('(\$[a-z]+)', $this->fillable['pattern']) && empty($params)) {
             throw new PlaceholdersParamsIsNotFoundException($this->fillable['pattern']);
         }
 
         foreach ($params as $placeholderSelector => $value) {
-
             $placeholder = ('{$' . $placeholderSelector . '}');
 
             if (!preg_match('(' . preg_quote($placeholder) . ')', $this->fillable['pattern'])) {
-                throw new PlaceholderIsNotFoundForRouteException(
-                    $placeholderSelector,
-                    $this->fillable['pattern'],
-                    $this->requiredName
-                );
+                throw new PlaceholderIsNotFoundForRouteException($placeholderSelector, $this->fillable['pattern'], $this->requiredName);
             }
 
             $this->fillable['pattern'] = str_replace($placeholder, $value, $this->fillable['pattern']);

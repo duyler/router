@@ -2,7 +2,9 @@
 
 namespace Duyler\Router\Exception;
 
-class RouteIsNotFoundForNameException extends \Exception
+use Exception;
+
+class RouteIsNotFoundForNameException extends Exception
 {
     public function __construct($routeName)
     {
