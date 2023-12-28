@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Duyler\Router;
 
 use Duyler\Router\Contract\RouteHandlerInterface;
-use Exception;
+use RuntimeException;
 
 class Route
 {
@@ -21,7 +21,7 @@ class Route
     public static function get(string $pattern): RouteHandlerInterface
     {
         if (is_null(static::$handler)) {
-            throw new Exception('Router is not initialized');
+            static::throwNotInitialized();
         }
 
         return static::$handler->route('get', $pattern);
@@ -30,7 +30,7 @@ class Route
     public static function post(string $pattern): RouteHandlerInterface
     {
         if (is_null(static::$handler)) {
-            throw new Exception('Router is not initialized');
+            static::throwNotInitialized();
         }
 
         return static::$handler->route('post', $pattern);
@@ -39,7 +39,7 @@ class Route
     public static function put(string $pattern): RouteHandlerInterface
     {
         if (is_null(static::$handler)) {
-            throw new Exception('Router is not initialized');
+            static::throwNotInitialized();
         }
 
         return static::$handler->route('put', $pattern);
@@ -48,7 +48,7 @@ class Route
     public static function patch(string $pattern): RouteHandlerInterface
     {
         if (is_null(static::$handler)) {
-            throw new Exception('Router is not initialized');
+            static::throwNotInitialized();
         }
 
         return static::$handler->route('patch', $pattern);
@@ -57,9 +57,14 @@ class Route
     public static function delete(string $pattern): RouteHandlerInterface
     {
         if (is_null(static::$handler)) {
-            throw new Exception('Router is not initialized');
+            static::throwNotInitialized();
         }
 
         return static::$handler->route('delete', $pattern);
+    }
+
+    private static function throwNotInitialized(): never
+    {
+        throw new RuntimeException('Router is not initialized');
     }
 }

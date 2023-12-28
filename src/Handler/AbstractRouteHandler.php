@@ -39,9 +39,7 @@ abstract class AbstractRouteHandler
         if (!is_null($this->matched)) {
             return $this;
         }
-        if (!is_null($where)) {
-            $this->fillable['where'] = $where;
-        }
+        $this->fillable['where'] = $where;
 
         return $this;
     }
