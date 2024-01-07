@@ -8,6 +8,7 @@ use Duyler\Router\Exception\HandlerIsNotSetException;
 use Duyler\Router\Exception\PlaceholdersForPatternNotFoundException;
 use Duyler\Router\MatchedRoute;
 use Duyler\Router\Request;
+use Duyler\Router\RouteDefinition;
 
 abstract class AbstractRouteHandler
 {
@@ -84,12 +85,12 @@ abstract class AbstractRouteHandler
         return $this;
     }
 
-    public function match(): void
+    public function match(RouteDefinition $routeDefinition): void
     {
         if (!is_null($this->matched)) {
             return;
         }
-        $this->checkErrors();
+        $this->checkErrors($routeDefinition);
     }
 
     public function isMatched(): bool
@@ -101,14 +102,14 @@ abstract class AbstractRouteHandler
         return true;
     }
 
-    protected function checkErrors(): void
+    protected function checkErrors(RouteDefinition $routeDefinition): void
     {
-        if (isset($this->fillable['where']) && !preg_match('(\{\$[a-zA-Z]+\})', $this->fillable['pattern'])) {
-            throw new PlaceholdersForPatternNotFoundException($this->fillable['pattern']);
+        if ($routeDefinition->getWhere() && !preg_match('(\{\$[a-zA-Z]+\})', $routeDefinition->getPattern())) {
+            throw new PlaceholdersForPatternNotFoundException($routeDefinition->getPattern());
         }
 
-        if (!isset($this->fillable['handler']) and !isset($this->fillable['scenario'])) {
-            throw new HandlerIsNotSetException($this->fillable['pattern']);
+        if (!$routeDefinition->getHandler() and !$routeDefinition->getScenario()) {
+            throw new HandlerIsNotSetException($routeDefinition->getPattern());
         }
     }
 }

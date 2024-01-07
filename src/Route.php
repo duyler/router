@@ -4,63 +4,65 @@ declare(strict_types=1);
 
 namespace Duyler\Router;
 
-use Duyler\Router\Contract\RouteHandlerInterface;
 use RuntimeException;
 
 class Route
 {
-    protected static null|RouteHandlerInterface $handler = null;
+    private static RouteCollection $routeCollection;
 
-    protected static string $routesDirPath = '';
-
-    public function __construct(RouteHandlerInterface $handler)
+    public function __construct(RouteCollection $routeCollection)
     {
-        static::$handler = $handler;
+        static::$routeCollection = $routeCollection;
     }
 
-    public static function get(string $pattern): RouteHandlerInterface
+    public static function get(string $pattern): RouteDefinition
     {
-        if (is_null(static::$handler)) {
+        if (static::$routeCollection === null) {
             static::throwNotInitialized();
         }
-
-        return static::$handler->route('get', $pattern);
+        $route = new RouteDefinition('get', $pattern);
+        static::$routeCollection->add($route);
+        return $route;
     }
 
-    public static function post(string $pattern): RouteHandlerInterface
+    public static function post(string $pattern): RouteDefinition
     {
-        if (is_null(static::$handler)) {
+        if (static::$routeCollection === null) {
             static::throwNotInitialized();
         }
-
-        return static::$handler->route('post', $pattern);
+        $route = new RouteDefinition('post', $pattern);
+        static::$routeCollection->add($route);
+        return $route;
     }
 
-    public static function put(string $pattern): RouteHandlerInterface
+    public static function put(string $pattern): RouteDefinition
     {
-        if (is_null(static::$handler)) {
+        if (static::$routeCollection === null) {
             static::throwNotInitialized();
         }
-
-        return static::$handler->route('put', $pattern);
+        $route = new RouteDefinition('put', $pattern);
+        static::$routeCollection->add($route);
+        return $route;
     }
 
-    public static function patch(string $pattern): RouteHandlerInterface
+    public static function patch(string $pattern): RouteDefinition
     {
-        if (is_null(static::$handler)) {
+        if (static::$routeCollection === null) {
             static::throwNotInitialized();
         }
-
-        return static::$handler->route('patch', $pattern);
+        $route = new RouteDefinition('patch', $pattern);
+        static::$routeCollection->add($route);
+        return $route;
     }
 
-    public static function delete(string $pattern): RouteHandlerInterface
+    public static function delete(string $pattern): RouteDefinition
     {
-        if (is_null(static::$handler)) {
+        if (static::$routeCollection === null) {
             static::throwNotInitialized();
         }
-
-        return static::$handler->route('delete', $pattern);
+        $route = new RouteDefinition('delete', $pattern);
+        static::$routeCollection->add($route);
+        return $route;
     }
 
     private static function throwNotInitialized(): never

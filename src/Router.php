@@ -5,14 +5,18 @@ declare(strict_types=1);
 namespace Duyler\Router;
 
 use Duyler\Router\Handler\Mapper;
-use Duyler\Router\Handler\UrlGenerator;
 use Psr\Http\Message\ServerRequestInterface;
 
 class Router
 {
     private Resolver $resolver;
+    private RouteCollection $routeCollection;
 
-    public function __construct(ServerRequestInterface $serverRequest, RouterConfig $routerConfig)
+    public function __construct(
+        private ?RouterConfig $routerConfig = null,
+    ) {}
+
+    public function startRouting(RouteCollection $routeCollection, ServerRequestInterface $serverRequest): CurrentRoute
     {
         $request = new Request(
             $serverRequest->getUri()->getPath(),
@@ -21,31 +25,16 @@ class Router
             $serverRequest->getUri()->getScheme(),
         );
 
-        $routerFilePlug = new RouteFilePlug(
-            $routerConfig->routesDirPath,
-            $routerConfig->routesAliases,
-        );
-
         $mapper = new Mapper($request);
 
         $this->resolver = new Resolver(
-            $mapper,
-            $request,
-            $routerFilePlug,
-            new Result()
+            mapper: $mapper,
+            request: $request,
+            routeCollection: $routeCollection,
         );
 
-        new Route($mapper);
-        new Url(new UrlGenerator($routerFilePlug, $request));
-    }
+        $this->resolver->setLanguages($this->routerConfig?->languages);
 
-    public static function create(ServerRequestInterface $serverRequest, RouterConfig $routerConfig): static
-    {
-        return new static($serverRequest, $routerConfig);
-    }
-
-    public function startRouting(): Result
-    {
         return $this->resolver->resolve();
     }
 }

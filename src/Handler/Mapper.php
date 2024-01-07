@@ -4,29 +4,32 @@ declare(strict_types=1);
 
 namespace Duyler\Router\Handler;
 
-use Duyler\Router\Contract\RouteHandlerInterface;
 use Duyler\Router\Enum\Type;
+use Duyler\Router\Exception\HandlerIsNotSetException;
+use Duyler\Router\Exception\PlaceholdersForPatternNotFoundException;
 use Duyler\Router\MatchedRoute;
+use Duyler\Router\Request;
+use Duyler\Router\RouteDefinition;
 
-class Mapper extends AbstractRouteHandler implements RouteHandlerInterface
+class Mapper
 {
-    public function match(): void
+    protected MatchedRoute $matched;
+
+    public function __construct(private Request $request) {}
+
+    public function match(RouteDefinition $routeDefinition): bool
     {
-        parent::match();
+        $this->checkErrors($routeDefinition);
 
-        if (!is_null($this->matched)) {
-            return;
+        if (!$this->request->isMethod(strtoupper($routeDefinition->getMethod()))) {
+            return false;
         }
 
-        if (!$this->request->isMethod(strtoupper($this->fillable['method']))) {
-            return;
-        }
-
-        $pattern = $this->fillable['pattern'];
+        $pattern = $routeDefinition->getPattern();
 
         // @todo добавить проверку на существование плейсхолдера с выбросом исключения
-        if (!empty($this->fillable['where'])) {
-            foreach ($this->fillable['where'] as $key => $condition) {
+        if (!empty($routeDefinition->getWhere())) {
+            foreach ($routeDefinition->getWhere() as $key => $condition) {
                 $pattern = match ($condition) {
                     Type::Integer => str_replace('{$' . $key . '}', Type::Integer->value, $pattern),
                     Type::String => str_replace('{$' . $key . '}', Type::String->value, $pattern),
@@ -37,14 +40,26 @@ class Mapper extends AbstractRouteHandler implements RouteHandlerInterface
         }
 
         if (!preg_match("(^{$pattern}$)", $this->request->getUri())) {
-            return;
+            return false;
         }
 
-        $this->matched = MatchedRoute::create($this->fillable);
+        $this->matched = new MatchedRoute($routeDefinition);
+        return true;
     }
 
     public function getMatched(): MatchedRoute
     {
         return $this->matched;
+    }
+
+    protected function checkErrors(RouteDefinition $routeDefinition): void
+    {
+        if ($routeDefinition->getWhere() && !preg_match('(\{\$[a-zA-Z]+\})', $routeDefinition->getPattern())) {
+            throw new PlaceholdersForPatternNotFoundException($routeDefinition->getPattern());
+        }
+
+        if (!$routeDefinition->getHandler() and !$routeDefinition->getScenario()) {
+            throw new HandlerIsNotSetException($routeDefinition->getPattern());
+        }
     }
 }
