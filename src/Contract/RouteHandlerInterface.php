@@ -2,6 +2,8 @@
 
 namespace Duyler\Router\Contract;
 
+use Duyler\Router\RouteDefinition;
+
 interface RouteHandlerInterface
 {
     public function route(string $method, string $pattern): static;
@@ -16,5 +18,5 @@ interface RouteHandlerInterface
 
     public function action(string $action): static;
 
-    public function match(): void;
+    public function match(RouteDefinition $routeDefinition): void;
 }

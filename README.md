@@ -8,8 +8,20 @@ Route::get('/categories/edit/{$id}')
     ->where(['id' => Type::Integer])
     ->handler('Catalog')
     ->action('CategoryEdit')
-    ->name('category.edit')
-    ->match();
+    ->name('category.edit');
+    
+$routeCollection = new RouteCollection();
+$routeCollection->add(
+    Route::get('/categories/edit/{$id}')
+        ->where(['id' => Type::Integer])
+        ->handler('Catalog')
+        ->action('CategoryEdit')
+        ->name('category.edit')
+);
+
+$router = new Router();
+$currentRoute = $router->startRouting($routeCollection, $request);
+    
 ```
 
 ## Creating links from routes:

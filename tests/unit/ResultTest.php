@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Duyler\Router\Test;
 
-use Duyler\Router\Result;
+use Duyler\Router\CurrentRoute;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -34,8 +34,8 @@ class ResultTest extends TestCase
         $this->assertEquals('', self::getResult()->language);
     }
 
-    private static function getResult(): Result
+    private static function getResult(): CurrentRoute
     {
-        return new Result();
+        return new CurrentRoute();
     }
 }

@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace Duyler\Router;
 
-use Duyler\Router\Handler\Mapper;
-use Duyler\Router\Handler\UrlGenerator;
+use Duyler\Router\Handler\Matcher;
 use Psr\Http\Message\ServerRequestInterface;
 
 class Router
 {
-    private Resolver $resolver;
+    public function __construct(
+        private ?RouterConfig $routerConfig = null,
+    ) {}
 
-    public function __construct(ServerRequestInterface $serverRequest, RouterConfig $routerConfig)
+    public function startRouting(RouteCollection $routeCollection, ServerRequestInterface $serverRequest): CurrentRoute
     {
         $request = new Request(
             $serverRequest->getUri()->getPath(),
@@ -21,31 +22,16 @@ class Router
             $serverRequest->getUri()->getScheme(),
         );
 
-        $routerFilePlug = new RouteFilePlug(
-            $routerConfig->routesDirPath,
-            $routerConfig->routesAliases,
+        $matcher = new Matcher($request);
+
+        $resolver = new Resolver(
+            matcher: $matcher,
+            request: $request,
+            routeCollection: $routeCollection,
         );
 
-        $mapper = new Mapper($request);
+        $resolver->setLanguages($this->routerConfig?->languages);
 
-        $this->resolver = new Resolver(
-            $mapper,
-            $request,
-            $routerFilePlug,
-            new Result()
-        );
-
-        new Route($mapper);
-        new Url(new UrlGenerator($routerFilePlug, $request));
-    }
-
-    public static function create(ServerRequestInterface $serverRequest, RouterConfig $routerConfig): static
-    {
-        return new static($serverRequest, $routerConfig);
-    }
-
-    public function startRouting(): Result
-    {
-        return $this->resolver->resolve();
+        return $resolver->resolve();
     }
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Duyler\Router;
 
-class Result
+class CurrentRoute
 {
     public bool $status = false;
     public string $handler = '';

@@ -14,17 +14,14 @@ readonly class MatchedRoute
     public string $method;
     public array $where;
 
-    public static function create(array $fillable): self
+    public function __construct(RouteDefinition $routeDefinition)
     {
-        $matched = new static();
-        $matched->name = $fillable['name'] ?? '';
-        $matched->pattern = $fillable['pattern'];
-        $matched->handler = $fillable['handler'] ?? '';
-        $matched->scenario = $fillable['scenario'] ?? '';
-        $matched->action = $fillable['action'] ?? '';
-        $matched->method = $fillable['method'];
-        $matched->where = $fillable['where'] ?? [];
-
-        return $matched;
+        $this->name = $routeDefinition->getName() ?? '';
+        $this->pattern = $routeDefinition->getPattern();
+        $this->handler = $routeDefinition->getHandler() ?? '';
+        $this->scenario = $routeDefinition->getScenario() ?? '';
+        $this->action = $routeDefinition->getAction() ?? '';
+        $this->method = $routeDefinition->getMethod();
+        $this->where = $routeDefinition->getWhere() ?? [];
     }
 }

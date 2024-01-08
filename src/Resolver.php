@@ -5,35 +5,50 @@ declare(strict_types=1);
 namespace Duyler\Router;
 
 use Duyler\Router\Enum\Type;
-use Duyler\Router\Handler\Mapper;
+use Duyler\Router\Handler\Matcher;
 
 class Resolver
 {
-    private const ATTRIBUTE_ARRAY_DELIMITER = '/';
+    private const string ATTRIBUTE_ARRAY_DELIMITER = '/';
     private array $segments = [];
     private array $languages = [];
     private string $uri;
 
     public function __construct(
-        private readonly Mapper $mapper,
+        private readonly Matcher $matcher,
         private readonly Request $request,
-        private readonly RouteFilePlug $routeFilePlug,
-        private readonly Result $result
+        private readonly RouteCollection $routeCollection,
     ) {}
 
-    public function resolve(): Result
+    public function resolve(): CurrentRoute
     {
         $this->uri = $this->request->getUri();
 
         $this->segments = explode('/', $this->uri);
 
-        if (count($this->languages) > 0) {
-            $this->result->language = $this->prepareLanguage();
+        $matched = $this->matchRoute();
+
+        if ($matched === null) {
+            return new CurrentRoute();
         }
 
-        $this->plugRoutes();
+        $result = new CurrentRoute();
+        $result->status = true;
+        $result->handler = $matched->handler;
+        $result->scenario = $matched->scenario;
+        $result->action = $matched->action;
 
-        return $this->buildResult();
+        if (count($this->languages) > 0) {
+            $result->language = $this->prepareLanguage();
+        }
+
+        if (!empty($matched->where)) {
+            $where = $this->prepareWhere($matched->where, $matched->pattern);
+            $attributesTypesMap = $this->prepareTypes($matched->where);
+            $result->attributes = $this->assignAttributes($where, $matched->pattern, $attributesTypesMap);
+        }
+
+        return $result;
     }
 
     public function setLanguages(array $languages = []): void
@@ -41,35 +56,14 @@ class Resolver
         $this->languages = $languages;
     }
 
-    private function plugRoutes(): void
+    private function matchRoute(): ?MatchedRoute
     {
-        if ('/' === $this->uri or 0 === count($this->segments)) {
-            $this->routeFilePlug->plugDefault();
-        } else {
-            $this->routeFilePlug->plug($this->segments[0]);
+        foreach ($this->routeCollection->getRoutes() as $routeDefinition) {
+            if ($this->matcher->match($routeDefinition)) {
+                return $this->matcher->getMatched();
+            }
         }
-    }
-
-    private function buildResult(): Result
-    {
-        if (!$this->mapper->isMatched()) {
-            return $this->result;
-        }
-
-        $matched = $this->mapper->getMatched();
-
-        $this->result->status = true;
-        $this->result->handler = $matched->handler;
-        $this->result->scenario = $matched->scenario;
-        $this->result->action = $matched->action;
-
-        if (!empty($matched->where)) {
-            $where = $this->prepareWhere($matched->where, $matched->pattern);
-            $attributesTypesMap = $this->prepareTypes($matched->where);
-            $this->result->attributes = $this->assignAttributes($where, $matched->pattern, $attributesTypesMap);
-        }
-
-        return $this->result;
+        return null;
     }
 
     private function prepareLanguage(): string

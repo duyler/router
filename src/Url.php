@@ -27,8 +27,6 @@ class Url
             throw new RouterIsNotInitializedException();
         }
 
-        new Route(static::$uriGenerator);
-
         return static::$uriGenerator->getUrl($routeName, $params, $lang);
     }
 }
