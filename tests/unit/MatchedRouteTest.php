@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Duyler\Router\Test;
 
 use Duyler\Router\MatchedRoute;
+use Duyler\Router\RouteDefinition;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -46,13 +47,14 @@ class MatchedRouteTest extends TestCase
 
     private static function matchedRoute(): MatchedRoute
     {
-        return MatchedRoute::create([
-            'name' => 'news.show',
-            'pattern' => 'news/show/{$slug}',
-            'handler' => 'News',
-            'scenario' => 'Show',
-            'method' => 'get',
-            'where' => ['slug' => '([a-z0-9\-]+)'],
-        ]);
+        $definitionRoute = new RouteDefinition(
+            method: 'get',
+            pattern: 'news/show/{$slug}',
+            name: 'news.show',
+            handler: 'News',
+            scenario: 'Show',
+            where: ['slug' => '([a-z0-9\-]+)'],
+        );
+        return new MatchedRoute($definitionRoute);
     }
 }

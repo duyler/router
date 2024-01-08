@@ -93,7 +93,6 @@ class AbstractRouteHandlerTest extends TestCase
             ->handler('News')
             ->scenario('Show')
             ->where(['id' => '([0-9]+)', 'slug' => '([a-z0-9\-]+)'])
-            ->match()
         ;
 
         $this->assertTrue(true);
@@ -107,43 +106,9 @@ class AbstractRouteHandlerTest extends TestCase
             ->handler('News')
             ->scenario('Show')
             ->where(['id' => '([0-9]+)', 'slugString' => '([a-z0-9\-]+)'])
-            ->match()
         ;
 
         $this->assertTrue(true);
-    }
-
-    public function testMatchWhenHandlerIsNotSet(): void
-    {
-        $this->expectException(HandlerIsNotSetException::class);
-
-        $routeHandler = $this->routeHandler();
-        $routeHandler
-            ->route('get', 'news/show/{$slug}.html')
-            ->match()
-        ;
-    }
-
-    public function testMatchWhenWhereIsSetAndPatternDoesNotContainPlaceholders(): void
-    {
-        $this->expectException(PlaceholdersForPatternNotFoundException::class);
-
-        $routeHandler = $this->routeHandler();
-        $routeHandler
-            ->route('get', 'news/show/{slug}.html')
-            ->handler('News')
-            ->scenario('Show')
-            ->where(['slug' => '([a-z0-9\-]+)'])
-            ->match()
-        ;
-    }
-
-    public function testIsMatched(): void
-    {
-        $routeHandler = $this->routeHandler();
-        $routeHandler->setMatched(self::matchedRoute());
-
-        $this->assertTrue($routeHandler->isMatched());
     }
 
     public function testIsMatchedWhenIsNotMatched(): void
@@ -158,18 +123,6 @@ class AbstractRouteHandlerTest extends TestCase
         $request = $this->createMock(Request::class);
 
         return new RouteHandler($request);
-    }
-
-    private static function matchedRoute(): MatchedRoute
-    {
-        return MatchedRoute::create([
-            'name' => 'news.show',
-            'pattern' => 'news/show/{$slug}.html',
-            'handler' => 'News',
-            'scenario' => 'Show',
-            'method' => 'get',
-            'where' => ['slug' => '([a-z0-9\-]+)'],
-        ]);
     }
 }
 
