@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Duyler\Router;
 
 use Duyler\Router\Enum\Type;
-use Duyler\Router\Handler\Mapper;
+use Duyler\Router\Handler\Matcher;
 
 class Resolver
 {
@@ -15,7 +15,7 @@ class Resolver
     private string $uri;
 
     public function __construct(
-        private readonly Mapper $mapper,
+        private readonly Matcher $matcher,
         private readonly Request $request,
         private readonly RouteCollection $routeCollection,
     ) {}
@@ -59,8 +59,8 @@ class Resolver
     private function matchRoute(): ?MatchedRoute
     {
         foreach ($this->routeCollection->getRoutes() as $routeDefinition) {
-            if ($this->mapper->match($routeDefinition)) {
-                return $this->mapper->getMatched();
+            if ($this->matcher->match($routeDefinition)) {
+                return $this->matcher->getMatched();
             }
         }
         return null;

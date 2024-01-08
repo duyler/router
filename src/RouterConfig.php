@@ -7,7 +7,6 @@ namespace Duyler\Router;
 readonly class RouterConfig
 {
     public function __construct(
-        public array $routesAliases = [],
         public array $languages = [],
     ) {}
 }

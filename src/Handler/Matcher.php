@@ -11,7 +11,7 @@ use Duyler\Router\MatchedRoute;
 use Duyler\Router\Request;
 use Duyler\Router\RouteDefinition;
 
-class Mapper
+class Matcher
 {
     protected MatchedRoute $matched;
 

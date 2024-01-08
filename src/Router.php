@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace Duyler\Router;
 
-use Duyler\Router\Handler\Mapper;
+use Duyler\Router\Handler\Matcher;
 use Psr\Http\Message\ServerRequestInterface;
 
 class Router
 {
-    private Resolver $resolver;
-    private RouteCollection $routeCollection;
-
     public function __construct(
         private ?RouterConfig $routerConfig = null,
     ) {}
@@ -25,16 +22,16 @@ class Router
             $serverRequest->getUri()->getScheme(),
         );
 
-        $mapper = new Mapper($request);
+        $matcher = new Matcher($request);
 
-        $this->resolver = new Resolver(
-            mapper: $mapper,
+        $resolver = new Resolver(
+            matcher: $matcher,
             request: $request,
             routeCollection: $routeCollection,
         );
 
-        $this->resolver->setLanguages($this->routerConfig?->languages);
+        $resolver->setLanguages($this->routerConfig?->languages);
 
-        return $this->resolver->resolve();
+        return $resolver->resolve();
     }
 }
