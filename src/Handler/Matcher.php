@@ -58,7 +58,7 @@ class Matcher
             throw new PlaceholdersForPatternNotFoundException($routeDefinition->getPattern());
         }
 
-        if (!$routeDefinition->getHandler() and !$routeDefinition->getScenario()) {
+        if (!$routeDefinition->getAction() and !$routeDefinition->getHandler() and !$routeDefinition->getTarget()) {
             throw new HandlerIsNotSetException($routeDefinition->getPattern());
         }
     }
