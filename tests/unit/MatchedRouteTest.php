@@ -32,7 +32,7 @@ class MatchedRouteTest extends TestCase
 
     public function testScenario(): void
     {
-        $this->assertEquals('Show', self::matchedRoute()->scenario);
+        $this->assertEquals('Show', self::matchedRoute()->target);
     }
 
     public function testMethod(): void

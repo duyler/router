@@ -35,7 +35,7 @@ class Resolver
         $result = new CurrentRoute();
         $result->status = true;
         $result->handler = $matched->handler;
-        $result->target = $matched->scenario;
+        $result->target = $matched->target;
         $result->action = $matched->action;
 
         if (count($this->languages) > 0) {
