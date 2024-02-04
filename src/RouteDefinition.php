@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace Duyler\Router;
 
+use Closure;
+
 class RouteDefinition
 {
     public function __construct(
         private readonly string $method,
         private readonly string $pattern,
         private string $name = '',
-        private string $handler = '',
-        private string $scenario = '',
+        private string|Closure|null $handler = null,
+        private string $target = '',
         private string $action = '',
         private array $where = [],
     ) {}
@@ -23,16 +25,16 @@ class RouteDefinition
         return $this;
     }
 
-    public function handler(string $handler): static
+    public function handler(mixed $handler): static
     {
         $this->handler = $handler;
 
         return $this;
     }
 
-    public function scenario(string $scenario): static
+    public function target(string $target): static
     {
-        $this->scenario = $scenario;
+        $this->target = $target;
 
         return $this;
     }
@@ -66,14 +68,14 @@ class RouteDefinition
         return $this->name;
     }
 
-    public function getHandler(): string
+    public function getHandler(): mixed
     {
         return $this->handler;
     }
 
-    public function getScenario(): string
+    public function getTarget(): string
     {
-        return $this->scenario;
+        return $this->target;
     }
 
     public function getAction(): string

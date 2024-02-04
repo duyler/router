@@ -21,7 +21,7 @@ class ResultTest extends TestCase
 
     public function testScenario(): void
     {
-        $this->assertEquals('', self::getResult()->scenario);
+        $this->assertEquals('', self::getResult()->target);
     }
 
     public function testAttributes(): void

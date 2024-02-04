@@ -52,7 +52,7 @@ class MatchedRouteTest extends TestCase
             pattern: 'news/show/{$slug}',
             name: 'news.show',
             handler: 'News',
-            scenario: 'Show',
+            target: 'Show',
             where: ['slug' => '([a-z0-9\-]+)'],
         );
         return new MatchedRoute($definitionRoute);
