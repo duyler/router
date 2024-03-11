@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Duyler\Router\Test;
+namespace Duyler\Router\Test\Unit;
 
 use Duyler\Router\MatchedRoute;
 use Duyler\Router\RouteDefinition;

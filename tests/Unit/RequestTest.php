@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Duyler\Router\Test;
+namespace Duyler\Router\Test\Unit;
 
 use Duyler\Router\Request;
 use PHPUnit\Framework\TestCase;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Duyler\Router\Test;
+namespace Duyler\Router\Test\Unit;
 
 use Duyler\Router\CurrentRoute;
 use PHPUnit\Framework\TestCase;
@@ -19,7 +19,7 @@ class ResultTest extends TestCase
         $this->assertFalse(self::getResult()->status);
     }
 
-    public function testScenario(): void
+    public function testTarget(): void
     {
         $this->assertEquals('', self::getResult()->target);
     }

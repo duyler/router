@@ -39,6 +39,8 @@ class Matcher
             }
         }
 
+        $pattern = trim($pattern, '/');
+
         if (!preg_match("(^{$pattern}$)", $this->request->getUri())) {
             return false;
         }
