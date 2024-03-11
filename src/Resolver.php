@@ -73,7 +73,7 @@ class Resolver
             $currentLanguage = array_shift($segments);
         }
 
-        $uri = trim(str_replace($this->languages, '', $baseUri), '/');
+        $uri = trim(implode('/', $segments), '/');
 
         if (empty($uri)) {
             $uri = '/';
@@ -101,7 +101,7 @@ class Resolver
 
             $uri = substr($uri, strlen($needless));
 
-            $delimiter = '(' === substr($value, 0, 1) ? ')' : substr($value, 0, 1);
+            $delimiter = str_starts_with($value, '(') ? ')' : substr($value, 0, 1);
 
             $segmentPattern = $this->makePattern($segments, $delimiter, $value);
 
