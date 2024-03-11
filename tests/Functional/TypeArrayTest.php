@@ -53,14 +53,14 @@ class TypeArrayTest extends TestCase
         ));
 
         $result = $router->startRouting($routeCollection, $this->createRequest(
-            path: 'ru/page/one',
+            path: 'ru/docs/event-bus',
             host: 'localhost',
             scheme: 'http',
             method: 'GET',
         ));
 
         $this->assertTrue($result->status);
-        $this->assertSame($result->attributes['pathToPage'], ['page', 'one']);
+        $this->assertSame($result->attributes['pathToPage'], ['docs', 'event-bus']);
         $this->assertEquals($result->language, 'ru');
     }
 
