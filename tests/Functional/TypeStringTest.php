@@ -64,6 +64,27 @@ class TypeStringTest extends TestCase
         $this->assertEquals($result->language, 'ru');
     }
 
+    #[Test]
+    public function root_without_language(): void
+    {
+        $routeCollection = new RouteCollection();
+        new Route($routeCollection);
+        Route::get('/')
+            ->handler('Handler');
+
+        $router = new Router(new RouterConfig());
+
+        $result = $router->startRouting($routeCollection, $this->createRequest(
+            path: '/',
+            host: 'localhost',
+            scheme: 'http',
+            method: 'GET',
+        ));
+
+        $this->assertTrue($result->status);
+        $this->assertEquals($result->language, '');
+    }
+
     protected function createRequest(string $path, string $host, string $scheme, string $method): ServerRequestInterface
     {
         $uri = $this->createMock(UriInterface::class);
