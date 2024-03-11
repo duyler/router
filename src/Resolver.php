@@ -10,9 +10,7 @@ use Duyler\Router\Handler\Matcher;
 class Resolver
 {
     private const string ATTRIBUTE_ARRAY_DELIMITER = '/';
-    private array $segments = [];
     private array $languages = [];
-    private string $uri;
 
     public function __construct(
         private readonly Matcher $matcher,
@@ -22,9 +20,11 @@ class Resolver
 
     public function resolve(): CurrentRoute
     {
-        $this->uri = $this->request->getUri();
+        $language = '';
 
-        $this->segments = explode('/', $this->uri);
+        if (count($this->languages) > 0) {
+            $language = $this->prepareLanguage($this->request->getUri());
+        }
 
         $matched = $this->matchRoute();
 
@@ -37,10 +37,7 @@ class Resolver
         $result->handler = $matched->handler;
         $result->target = $matched->target;
         $result->action = $matched->action;
-
-        if (count($this->languages) > 0) {
-            $result->language = $this->prepareLanguage();
-        }
+        $result->language = $language;
 
         if (!empty($matched->where)) {
             $where = $this->prepareWhere($matched->where, $matched->pattern);
@@ -66,15 +63,17 @@ class Resolver
         return null;
     }
 
-    private function prepareLanguage(): string
+    private function prepareLanguage(string $baseUri): string
     {
         $currentLanguage = '';
 
-        if (in_array($this->segments[0], $this->languages, true)) {
-            $currentLanguage = array_shift($this->segments);
+        $segments = explode('/', $baseUri);
+
+        if (in_array($segments[0], $this->languages, true)) {
+            $currentLanguage = array_shift($segments);
         }
 
-        $uri = trim(str_replace($this->languages, '', $this->uri), '/');
+        $uri = trim(str_replace($this->languages, '', $baseUri), '/');
 
         if (empty($uri)) {
             $uri = '/';
@@ -87,6 +86,8 @@ class Resolver
 
     private function assignAttributes(array $where, string $pattern, array $attributesTypesMap): array
     {
+        $pattern = trim($pattern, '/');
+
         $rawAttributes = [];
 
         $uri = $this->request->getUri();
@@ -104,7 +105,7 @@ class Resolver
 
             $segmentPattern = $this->makePattern($segments, $delimiter, $value);
 
-            preg_match($segmentPattern, $uri, $matched);
+            preg_match("/{$segmentPattern}/m", $uri, $matched);
 
             if (empty($segments)) {
                 $rawAttributes[$key] = $matched[0];
