@@ -20,7 +20,8 @@ class Resolver
 
     public function resolve(): CurrentRoute
     {
-        $language = '';
+        $language = null;
+        $attributes = [];
 
         if (count($this->languages) > 0) {
             $language = $this->prepareLanguage($this->request->getUri());
@@ -32,18 +33,20 @@ class Resolver
             return new CurrentRoute();
         }
 
-        $result = new CurrentRoute();
-        $result->status = true;
-        $result->handler = $matched->handler;
-        $result->target = $matched->target;
-        $result->action = $matched->action;
-        $result->language = $language;
-
         if (!empty($matched->where)) {
             $where = $this->prepareWhere($matched->where, $matched->pattern);
             $attributesTypesMap = $this->prepareTypes($matched->where);
-            $result->attributes = $this->assignAttributes($where, $matched->pattern, $attributesTypesMap);
+            $attributes = $this->assignAttributes($where, $matched->pattern, $attributesTypesMap);
         }
+
+        $result = new CurrentRoute(
+            status: true,
+            handler: $matched->handler,
+            target: $matched->target,
+            action: $matched->action,
+            attributes: $attributes,
+            language: $language,
+        );
 
         return $result;
     }

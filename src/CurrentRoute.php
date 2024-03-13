@@ -6,12 +6,14 @@ namespace Duyler\Router;
 
 use Closure;
 
-class CurrentRoute
+readonly class CurrentRoute
 {
-    public bool $status = false;
-    public string|Closure $handler = '';
-    public string $target = '';
-    public string $action = '';
-    public array $attributes = [];
-    public string $language = '';
+    public function __construct(
+        public bool $status = false,
+        public string|Closure|null $handler = null,
+        public ?string $target = null,
+        public ?string $action = null,
+        public array $attributes = [],
+        public ?string $language = null,
+    ) {}
 }
