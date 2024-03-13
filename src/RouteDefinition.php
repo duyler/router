@@ -11,10 +11,10 @@ class RouteDefinition
     public function __construct(
         private readonly string $method,
         private readonly string $pattern,
-        private string $name = '',
+        private ?string $name = null,
         private string|Closure|null $handler = null,
-        private string $target = '',
-        private string $action = '',
+        private ?string $target = null,
+        private ?string $action = null,
         private array $where = [],
     ) {}
 
@@ -63,22 +63,22 @@ class RouteDefinition
         return $this->pattern;
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function getHandler(): mixed
+    public function getHandler(): null|string|Closure
     {
         return $this->handler;
     }
 
-    public function getTarget(): string
+    public function getTarget(): ?string
     {
         return $this->target;
     }
 
-    public function getAction(): string
+    public function getAction(): ?string
     {
         return $this->action;
     }
