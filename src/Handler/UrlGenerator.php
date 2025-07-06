@@ -40,7 +40,7 @@ class UrlGenerator
                 throw new PlaceholderIsNotFoundForRouteException(
                     $placeholderSelector,
                     $pattern,
-                    $route->getName()
+                    $route->getName(),
                 );
             }
 
